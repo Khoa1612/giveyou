@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Yêu Thương Dành Cho Em</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5e1da, #f9c2d3);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #333;
+        }
+        #loginScreen, #quizScreen, #giftScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        #loginScreen {
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+        }
+        #quizScreen, #giftScreen {
+            opacity: 0;
+            pointer-events: none;
+            background: linear-gradient(135deg, #f9c2d3, #f5e1da); /* Matching background */
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+        .key {
+            width: 80px;
+            height: 80px;
+            background: #ffdee9; /* Softer pink */
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            color: #d82b7f; /* Deeper pink */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .key:hover {
+            background: #ffc9e2;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .key:active {
+            background: #ffb3d7;
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .pass-dot {
+            width: 15px;
+            height: 15px;
+            background: #ffe0e9;
+            border-radius: 50%;
+            margin: 0 8px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            border: 2px solid #ff99cc;
+        }
+        .pass-dot.filled {
+            background: #ff66b2;
+            transform: scale(1.2);
+            border-color: #e60073;
+        }
+
+        /* Quiz Specific Styles */
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 700px;
+            width: 90%;
+            margin: 20px auto;
+        }
+        .quiz-question {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #d82b7f;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        .quiz-options button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            background: #ffdee9;
+            border: 2px solid #ff99cc;
+            border-radius: 10px;
+            font-size: 1.2em;
+            color: #d82b7f;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .quiz-options button:hover {
+            background: #ffc9e2;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .quiz-options button.correct {
+            background-color: #a8dadc; /* Light blue */
+            border-color: #457b9d; /* Darker blue */
+            color: white;
+        }
+        .quiz-options button.wrong {
+            background-color: #e63946; /* Red */
+            border-color: #c00000;
+            color: white;
+        }
+        .quiz-options button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        #quizResult {
+            margin-top: 25px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #457b9d;
+        }
+        .retry-button {
+            background-color: #fca5a5; /* Light red/pink for retry */
+            color: white;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 9999px; /* Fully rounded */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .retry-button:hover {
+            background-color: #ef4444; /* Darker red on hover */
+            transform: translateY(-2px);
+        }
+
+        /* Gift Box Specific Styles */
+        .gift-box {
+            width: 250px;
+            height: 200px;
+            background: #d82b7f; /* Deep pink */
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            margin-bottom: 50px;
+        }
+        .gift-box:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+        .gift-box::before { /* Top lid */
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: #d82b7f;
+            border-radius: 15px 15px 0 0;
+            border-bottom: 5px solid #a8dadc; /* Ribbon color */
+        }
+        .gift-box::after { /* Ribbon vertical */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 100%;
+            background: #a8dadc; /* Light blue ribbon */
+        }
+        .gift-box-ribbon-h { /* Ribbon horizontal */
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 30px;
+            background: #a8dadc;
+            z-index: 1;
+        }
+        .gift-box-bow { /* Bow */
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: #a8dadc;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        .gift-box-bow::before, .gift-box-bow::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #a8dadc;
+            border-radius: 50%;
+        }
+        .gift-box-bow::before { left: -10px; top: 10px; }
+        .gift-box-bow::after { right: -10px; top: 10px; }
+
+        .gift-open .gift-box::before {
+            transform: translateY(-80px) rotateX(45deg);
+            transition: transform 0.8s ease-in-out;
+            transform-origin: bottom center;
+        }
+
+        #letterContent {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', cursive; /* A more "letter-like" font */
+            font-size: 1.5em;
+            color: #d82b7f;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 30px auto 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        #letterContent.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Floating Hearts */
+        .heart {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: #ff6b6b;
+            transform: rotate(45deg);
+            animation: float 6s infinite;
+            z-index: 0;
+        }
+        .heart:before,
+        .heart:after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: #ff6b6b;
+            border-radius: 50%;
+        }
+        .heart:before {
+            top: -12.5px;
+            left: 0;
+        }
+        .heart:after {
+            top: 0;
+            left: -12.5px;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(45deg); opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="loginScreen">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Nhập Mật Khẩu Bí Mật</h1>
+        <p class="text-lg text-gray-600 mb-8">Chìa khóa mở ra thế giới của chúng mình</p>
+        <div class="flex mb-8">
+            <div class="pass-dot"></div>
+            <div class="pass-dot"></div>
+            <div class="pass-dot"></div>
+            <div class="pass-dot"></div>
+        </div>
+        <div class="keypad">
+            <div class="key" onclick="addDigit('1')">1</div>
+            <div class="key" onclick="addDigit('2')">2</div>
+            <div class="key" onclick="addDigit('3')">3</div>
+            <div class="key" onclick="addDigit('4')">4</div>
+            <div class="key" onclick="addDigit('5')">5</div>
+            <div class="key" onclick="addDigit('6')">6</div>
+            <div class="key" onclick="addDigit('7')">7</div>
+            <div class="key" onclick="addDigit('8')">8</div>
+            <div class="key" onclick="addDigit('9')">9</div>
+            <div class="key" style="opacity: 0; pointer-events: none;"></div>
+            <div class="key" onclick="addDigit('0')">0</div>
+            <div class="key" onclick="clearLast()">⌫</div>
+        </div>
+        <p id="errorMsg" class="text-red-500 mt-6 text-lg hidden">Sai mật khẩu rồi! Thử lại nhé công chúa!</p>
+    </div>
+
+    <div id="quizScreen">
+        <h1 class="text-4xl font-extrabold text-pink-700 mt-8 mb-10 animate-pulse">Trắc Nghiệm Tình Yêu Về Duy Khoa ❤️</h1>
+        <div class="quiz-container">
+            <p id="questionText" class="quiz-question"></p>
+            <div id="optionsContainer" class="quiz-options">
+                <button data-option="A">A. </button>
+                <button data-option="B">B. </button>
+                <button data-option="C">C. </button>
+                <button data-option="D">D. </button>
+            </div>
+            <p id="quizFeedback" class="text-lg mt-4 hidden"></p>
+            <button id="nextQuestionBtn" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full mt-6 text-xl hidden" onclick="nextQuestion()">Tiếp tục</button>
+            <p id="quizScore" class="mt-4 text-2xl font-bold text-gray-700">Điểm: 0/5</p>
+            <button id="retryQuizBtn" class="retry-button mt-6 hidden" onclick="startQuiz()">Thử lại</button>
+        </div>
+    </div>
+
+    <div id="giftScreen">
+        <h1 class="text-4xl font-extrabold text-pink-700 mt-8 mb-10 animate-pulse">Em đã xuất sắc! 🎁</h1>
+        <p class="text-2xl text-gray-700 mb-10">Hộp quà bí mật dành cho em!</p>
+        <div class="gift-box" onclick="openGift()">
+            <div class="gift-box-ribbon-h"></div>
+            <div class="gift-box-bow"></div>
+        </div>
+        <div id="letterContent" class="hidden">
+            <p class="text-center">Gửi Em Yêu,</p>
+            <p class="mt-4">Anh biết em đã cố gắng rất nhiều để đến được đây. Giống như cách em luôn cố gắng trong mọi việc em làm.</p>
+            <p class="mt-4">Anh muốn nói rằng:</p>
+            <p class="text-5xl font-extrabold text-center mt-8">I LOVE YOU</p>
+            <p class="text-center mt-8">Nhiều hơn tất cả những gì em có thể tưởng tượng. Hãy luôn nhớ điều đó nhé!</p>
+            <p class="text-right mt-10">- Duy Khoa của Em</p>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="https://vgmsite.com/soundtracks/bach-chaconne-for-solo-violin/lvyxsqkvyz/01%20Chaconne%20-%20Part%20I.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="successSound" src="https://www.soundjay.com/buttons/beep-07.mp3"></audio>
+    <audio id="failSound" src="https://www.soundjay.com/buttons/beep-04.mp3"></audio>
+    <audio id="flipSound" src="https://www.soundjay.com/buttons/button-4.mp3"></audio>
+    <audio id="correctAnswerSound" src="https://www.soundjay.com/woo/woo-1.mp3"></audio>
+    <audio id="wrongAnswerSound" src="https://www.soundjay.com/misc/fail.mp3"></audio>
+    <audio id="giftOpenSound" src="https://www.soundjay.com/misc/cork-pop-2.mp3"></audio>
+
+
+    <script>
+        let password = '';
+        const correctPassword = '1612';
+        const dots = document.querySelectorAll('.pass-dot');
+        const audio = document.getElementById('backgroundMusic');
+        const successSound = document.getElementById('successSound');
+        const failSound = document.getElementById('failSound');
+        const flipSound = document.getElementById('flipSound');
+        const correctAnswerSound = document.getElementById('correctAnswerSound');
+        const wrongAnswerSound = document.getElementById('wrongAnswerSound');
+        const giftOpenSound = document.getElementById('giftOpenSound');
+
+
+        // Play sound effects
+        function playSound(sound) {
+            sound.currentTime = 0; // Rewind to the start
+            sound.play();
+        }
+
+        // --- Password Logic ---
+        function addDigit(digit) {
+            if (password.length < 4) {
+                password += digit;
+                updateDots();
+                playSound(flipSound);
+                if (password.length === 4) {
+                    checkPassword();
+                }
+            }
+        }
+
+        function clearLast() {
+            password = password.slice(0, -1);
+            updateDots();
+            document.getElementById('errorMsg').classList.add('hidden');
+            playSound(flipSound);
+        }
+
+        function updateDots() {
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('filled', index < password.length);
+            });
+        }
+
+        function checkPassword() {
+            const errorMsg = document.getElementById('errorMsg');
+            if (password === correctPassword) {
+                playSound(successSound);
+                gsap.to('#loginScreen', { opacity: 0, duration: 0.8, onComplete: () => {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('quizScreen').style.pointerEvents = 'auto';
+                    gsap.to('#quizScreen', { opacity: 1, duration: 0.8 });
+                    audio.play();
+                    startHearts(); // Start background hearts
+                    startQuiz(); // Start the quiz game
+                }});
+            } else {
+                playSound(failSound);
+                errorMsg.classList.remove('hidden');
+                gsap.fromTo('.pass-dot', { x: 0 }, { x: -15, duration: 0.1, yoyo: true, repeat: 5, ease: 'power1.inOut' });
+                setTimeout(() => {
+                    password = '';
+                    updateDots();
+                    errorMsg.classList.add('hidden');
+                }, 1500);
+            }
+        }
+
+        // --- Background Hearts ---
+        function startHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+                heart.style.opacity = Math.random() * 0.5 + 0.5;
+                document.body.appendChild(heart);
+                gsap.to(heart, { y: -window.innerHeight * 1.5, opacity: 0, duration: parseFloat(heart.style.animationDuration), ease: 'none', onComplete: () => heart.remove() });
+            }, 300);
+        }
+
+        // --- Quiz Game Logic ---
+        const questions = [
+            {
+                question: "Món ăn nào Duy Khoa thích ăn nhất?",
+                options: {
+                    A: "Bún bò",
+                    B: "Phở",
+                    C: "Cơm tấm",
+                    D: "Mì ý"
+                },
+                answer: "A"
+            },
+            {
+                question: "Duy Khoa thích màu gì nhất?",
+                options: {
+                    A: "Xanh dương",
+                    B: "Đen",
+                    C: "Trắng",
+                    D: "Hồng"
+                },
+                answer: "B"
+            },
+            {
+                question: "Kỷ niệm đầu tiên của Duy Khoa và em là gì?",
+                options: {
+                    A: "Lần đầu đi xem phim",
+                    B: "Lần đầu đi ăn kem",
+                    C: "Lần đầu nắm tay",
+                    D: "Lần đầu đi chơi xa"
+                },
+                answer: "C" // Adjust this to your actual first memory!
+            },
+            {
+                question: "Duy Khoa thường nghe thể loại nhạc nào?",
+                options: {
+                    A: "Pop ballad",
+                    B: "Rock",
+                    C: "EDM",
+                    D: "Acoustic"
+                },
+                answer: "A"
+            },
+            {
+                question: "Ước mơ lớn nhất của Duy Khoa hiện tại là gì?",
+                options: {
+                    A: "Du lịch vòng quanh thế giới",
+                    B: "Mua nhà thật to",
+                    C: "Luôn có em bên cạnh",
+                    D: "Thăng tiến trong công việc"
+                },
+                answer: "C" // Make this a sweet answer!
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let correctAnswersCount = 0;
+
+        const questionTextElem = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const quizFeedbackElem = document.getElementById('quizFeedback');
+        const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+        const quizScoreElem = document.getElementById('quizScore');
+        const retryQuizBtn = document.getElementById('retryQuizBtn'); // Get the new retry button
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswersCount = 0;
+            quizScoreElem.innerText = `Điểm: ${correctAnswersCount}/5`;
+            nextQuestionBtn.classList.add('hidden');
+            retryQuizBtn.classList.add('hidden'); // Hide retry button at the start of a new game
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            quizFeedbackElem.classList.add('hidden');
+            nextQuestionBtn.classList.add('hidden');
+            const q = questions[currentQuestionIndex];
+            questionTextElem.innerText = q.question;
+            optionsContainer.innerHTML = ''; // Clear previous options
+
+            for (const key in q.options) {
+                const button = document.createElement('button');
+                button.dataset.option = key;
+                button.innerText = `${key}. ${q.options[key]}`;
+                button.onclick = () => selectAnswer(button, key, q.answer);
+                optionsContainer.appendChild(button);
+            }
+        }
+
+        function selectAnswer(selectedButton, selectedOption, correctAnswer) {
+            // Disable all buttons after selection
+            Array.from(optionsContainer.children).forEach(button => {
+                button.disabled = true;
+                if (button.dataset.option === correctAnswer) {
+                    button.classList.add('correct');
+                } else if (button.dataset.option === selectedOption) {
+                    button.classList.add('wrong');
+                }
+            });
+
+            if (selectedOption === correctAnswer) {
+                correctAnswersCount++;
+                quizFeedbackElem.innerText = "Chính xác! Em thật hiểu anh!";
+                quizFeedbackElem.classList.remove('hidden');
+                quizFeedbackElem.style.color = '#457b9d'; // Blue for correct
+                playSound(correctAnswerSound);
+            } else {
+                quizFeedbackElem.innerText = `Sai rồi! Đáp án đúng là ${correctAnswer}.`;
+                quizFeedbackElem.classList.remove('hidden');
+                quizFeedbackElem.style.color = '#e63946'; // Red for wrong
+                playSound(wrongAnswerSound);
+            }
+            quizScoreElem.innerText = `Điểm: ${correctAnswersCount}/5`;
+            nextQuestionBtn.classList.remove('hidden'); // Show next button
+            gsap.from(quizFeedbackElem, { opacity: 0, y: 10, duration: 0.5 });
+            gsap.from(nextQuestionBtn, { opacity: 0, scale: 0.8, duration: 0.5, ease: 'back.out(1.7)' });
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            if (correctAnswersCount >= 3) {
+                gsap.to('#quizScreen', { opacity: 0, duration: 0.8, onComplete: () => {
+                    document.getElementById('quizScreen').style.display = 'none';
+                    document.getElementById('giftScreen').style.pointerEvents = 'auto';
+                    gsap.to('#giftScreen', { opacity: 1, duration: 0.8 });
+                    playSound(successSound); // Play success sound for unlocking gift
+                }});
+            } else {
+                // Not enough correct answers, show retry button
+                quizFeedbackElem.innerText = `Em đã trả lời đúng ${correctAnswersCount}/5 câu. Cần ít nhất 3 câu đúng để mở hộp quà. Đừng buồn nhé, thử lại nào!`;
+                quizFeedbackElem.classList.remove('hidden');
+                quizFeedbackElem.style.color = '#e63946'; // Red for message
+                nextQuestionBtn.classList.add('hidden'); // Hide next button
+                retryQuizBtn.classList.remove('hidden'); // Show retry button
+                gsap.from(retryQuizBtn, { opacity: 0, scale: 0.8, duration: 0.5, ease: 'back.out(1.7)' });
+                playSound(failSound); // Play a sound indicating failure
+            }
+        }
+
+        // --- Gift Box Logic ---
+        function openGift() {
+            const giftBox = document.querySelector('.gift-box');
+            const letterContent = document.getElementById('letterContent');
+
+            if (!giftBox.classList.contains('gift-open')) {
+                giftBox.classList.add('gift-open');
+                playSound(giftOpenSound); // Play gift opening sound
+
+                // Animate lid opening
+                gsap.to(giftBox, { /* Targets the gift box itself for the transform */
+                    '--top-lid-transform': 'translateY(-80px) rotateX(45deg)', // Custom property for lid transform
+                    duration: 0.8, ease: 'power2.out',
+                    onUpdate: () => {
+                        // Apply the custom property to the ::before pseudo-element
+                        // Note: Direct animation of pseudo-elements is not directly supported by GSAP.
+                        // This onUpdate is for demonstration or if you implement a polyfill/helper.
+                        // For a clean way, you might need to create a real element for the lid.
+                        // For simplicity, the CSS transition on .gift-box::before will handle it.
+                    }
+                });
+
+                // Animate letter appearance
+                setTimeout(() => {
+                    letterContent.classList.remove('hidden');
+                    letterContent.classList.add('show');
+                    gsap.from(letterContent, { opacity: 0, y: 50, duration: 1, ease: 'power2.out' });
+                }, 800); // Delay for lid animation to finish
+
+                // Stop further clicks on gift box after opening
+                giftBox.onclick = null;
+            }
+        }
+    </script>
+</body>
+</html>
