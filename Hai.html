@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dành cho Em Yêu</title>
+    <style>
+        /* CSS bắt đầu từ đây */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #ffafbd, #ffc3a0); /* Gradient màu hồng cam */
+            color: #333;
+            overflow: hidden; /* Ngăn cuộn */
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Màn hình chào */
+        #welcome-screen h1 {
+            color: #e91e63; /* Màu hồng */
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        #start-button {
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #start-button:hover {
+            background-color: #d81b60;
+            transform: translateY(-3px);
+        }
+
+        /* Màn hình nhập mật khẩu */
+        #passcode-screen h2 {
+            color: #673ab7; /* Màu tím */
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+
+        .passcode-display {
+            display: flex;
+            margin-bottom: 40px;
+            gap: 15px;
+        }
+
+        .passcode-display .dot {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 2px solid #9c27b0; /* Màu tím */
+            background-color: transparent;
+            transition: background-color 0.2s ease;
+        }
+
+        .passcode-display .dot.filled {
+            background-color: #9c27b0;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+
+        .key {
+            background-color: #f3e5f5; /* Màu tím nhạt */
+            color: #6a1b9a; /* Màu tím đậm */
+            border: none;
+            padding: 25px 0;
+            font-size: 1.5em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .key:active {
+            background-color: #e1bee7;
+            transform: scale(0.98);
+        }
+
+        .key.empty {
+            background-color: transparent;
+            cursor: default;
+            box-shadow: none;
+        }
+
+        .key.delete {
+            background-color: #ffccbc; /* Màu cam nhạt */
+            color: #d84315; /* Màu cam đậm */
+        }
+
+        .key.delete:active {
+            background-color: #ffab91;
+        }
+
+        .error-message {
+            color: #f44336; /* Màu đỏ */
+            margin-top: 20px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        /* Màn hình chính */
+        #main-screen h1 {
+            color: #4caf50; /* Màu xanh lá cây */
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .info-card {
+            background-color: #e8f5e9; /* Màu xanh lá cây nhạt */
+            border-left: 5px solid #4caf50;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-card h3 {
+            color: #388e3c; /* Màu xanh lá cây đậm */
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .info-card p {
+            margin: 0;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        #logout-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #logout-button:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+        /* CSS kết thúc ở đây */
+    </style>
+</head>
+<body>
+    <div id="welcome-screen" class="screen active">
+        <h1>Chào Em Yêu!</h1>
+        <button id="start-button">Bấm để bắt đầu</button>
+    </div>
+
+    <div id="passcode-screen" class="screen">
+        <h2>Nhập mật khẩu của chúng mình</h2>
+        <div class="passcode-display">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+        <div class="keypad">
+            <button class="key">1</button>
+            <button class="key">2</button>
+            <button class="key">3</button>
+            <button class="key">4</button>
+            <button class="key">5</button>
+            <button class="key">6</button>
+            <button class="key">7</button>
+            <button class="key">8</button>
+            <button class="key">9</button>
+            <button class="key empty"></button> <button class="key">0</button>
+            <button class="key delete">Xóa</button>
+        </div>
+        <p id="error-message" class="error-message"></p>
+    </div>
+
+    <div id="main-screen" class="screen">
+        <h1>Thông tin cute về Em Yêu!</h1>
+        <div class="info-card">
+            <h3>Tên Em:</h3>
+            <p>Nguyễn Thị Yêu</p>
+        </div>
+        <div class="info-card">
+            <h3>Ngày sinh nhật:</h3>
+            <p>16/12/2000</p>
+        </div>
+        <div class="info-card">
+            <h3>Sở thích:</h3>
+            <p>Thích anh, nghe nhạc, đọc sách, nấu ăn, du lịch...</p>
+        </div>
+        <div class="info-card">
+            <h3>Điều anh yêu nhất ở em:</h3>
+            <p>Nụ cười của em, sự quan tâm của em, và mọi thứ thuộc về em!</p>
+        </div>
+        <button id="logout-button">Đăng xuất</button>
+    </div>
+
+    <script>
+        // JavaScript bắt đầu từ đây
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const startButton = document.getElementById('start-button');
+            const passcodeScreen = document.getElementById('passcode-screen');
+            const mainScreen = document.getElementById('main-screen');
+            const keypad = document.querySelector('.keypad');
+            const passcodeDots = document.querySelectorAll('.passcode-display .dot');
+            const errorMessage = document.getElementById('error-message');
+            const logoutButton = document.getElementById('logout-button');
+
+            const correctPasscode = "1612"; // Mật khẩu đúng
+            let enteredPasscode = ""; // Mật khẩu người dùng nhập
+
+            // Hàm chuyển đổi màn hình
+            function showScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                document.getElementById(screenId).classList.add('active');
+            }
+
+            // Xử lý sự kiện khi bấm nút "Bắt đầu"
+            startButton.addEventListener('click', () => {
+                showScreen('passcode-screen');
+            });
+
+            // Xử lý khi bấm các phím số trên bàn phím
+            keypad.addEventListener('click', (event) => {
+                const target = event.target;
+                if (target.classList.contains('key') && !target.classList.contains('empty')) {
+                    if (target.classList.contains('delete')) {
+                        // Xóa ký tự cuối cùng
+                        enteredPasscode = enteredPasscode.slice(0, -1);
+                    } else {
+                        // Thêm số vào mật khẩu đã nhập
+                        if (enteredPasscode.length < correctPasscode.length) {
+                            enteredPasscode += target.textContent;
+                        }
+                    }
+                    updatePasscodeDisplay();
+                    checkPasscode();
+                }
+            });
+
+            // Cập nhật hiển thị các chấm mật khẩu
+            function updatePasscodeDisplay() {
+                passcodeDots.forEach((dot, index) => {
+                    if (index < enteredPasscode.length) {
+                        dot.classList.add('filled');
+                    } else {
+                        dot.classList.remove('filled');
+                    }
+                });
+                // Ẩn thông báo lỗi khi người dùng bắt đầu nhập lại
+                errorMessage.classList.remove('show');
+            }
+
+            // Kiểm tra mật khẩu
+            function checkPasscode() {
+                if (enteredPasscode.length === correctPasscode.length) {
+                    if (enteredPasscode === correctPasscode) {
+                        // Mật khẩu đúng, chuyển sang màn hình chính
+                        setTimeout(() => {
+                            showScreen('main-screen');
+                            enteredPasscode = ""; // Reset mật khẩu
+                            updatePasscodeDisplay(); // Reset hiển thị chấm
+                        }, 300); // Chờ một chút trước khi chuyển màn hình
+                    } else {
+                        // Mật khẩu sai, hiển thị lỗi và reset
+                        errorMessage.textContent = "Mật khẩu sai rồi Em Yêu, thử lại nhé!";
+                        errorMessage.classList.add('show');
+                        enteredPasscode = ""; // Reset mật khẩu
+                        setTimeout(() => {
+                            updatePasscodeDisplay(); // Reset hiển thị chấm sau 1 giây
+                        }, 1000);
+                    }
+                }
+            }
+
+            // Xử lý khi bấm nút "Đăng xuất"
+            logoutButton.addEventListener('click', () => {
+                showScreen('welcome-screen');
+                enteredPasscode = ""; // Đảm bảo mật khẩu được reset
+                updatePasscodeDisplay(); // Cập nhật hiển thị chấm
+            });
+        });
+        // JavaScript kết thúc ở đây
+    </script>
+</body>
+</html>
