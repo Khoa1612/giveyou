@@ -1,339 +1,372 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dành cho Em Yêu</title>
-    <style>
-        /* CSS bắt đầu từ đây */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(to right, #ffafbd, #ffc3a0); /* Gradient màu hồng cam */
-            color: #333;
-            overflow: hidden; /* Ngăn cuộn */
-        }
-
-        .screen {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 90%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 15px;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            text-align: center;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Màn hình chào */
-        #welcome-screen h1 {
-            color: #e91e63; /* Màu hồng */
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        #start-button {
-            background-color: #e91e63;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        #start-button:hover {
-            background-color: #d81b60;
-            transform: translateY(-3px);
-        }
-
-        /* Màn hình nhập mật khẩu */
-        #passcode-screen h2 {
-            color: #673ab7; /* Màu tím */
-            margin-bottom: 30px;
-            font-size: 1.8em;
-        }
-
-        .passcode-display {
-            display: flex;
-            margin-bottom: 40px;
-            gap: 15px;
-        }
-
-        .passcode-display .dot {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            border: 2px solid #9c27b0; /* Màu tím */
-            background-color: transparent;
-            transition: background-color 0.2s ease;
-        }
-
-        .passcode-display .dot.filled {
-            background-color: #9c27b0;
-        }
-
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            width: 100%;
-        }
-
-        .key {
-            background-color: #f3e5f5; /* Màu tím nhạt */
-            color: #6a1b9a; /* Màu tím đậm */
-            border: none;
-            padding: 25px 0;
-            font-size: 1.5em;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .key:active {
-            background-color: #e1bee7;
-            transform: scale(0.98);
-        }
-
-        .key.empty {
-            background-color: transparent;
-            cursor: default;
-            box-shadow: none;
-        }
-
-        .key.delete {
-            background-color: #ffccbc; /* Màu cam nhạt */
-            color: #d84315; /* Màu cam đậm */
-        }
-
-        .key.delete:active {
-            background-color: #ffab91;
-        }
-
-        .error-message {
-            color: #f44336; /* Màu đỏ */
-            margin-top: 20px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .error-message.show {
-            opacity: 1;
-        }
-
-        /* Màn hình chính */
-        #main-screen h1 {
-            color: #4caf50; /* Màu xanh lá cây */
-            margin-bottom: 30px;
-            font-size: 2.2em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .info-card {
-            background-color: #e8f5e9; /* Màu xanh lá cây nhạt */
-            border-left: 5px solid #4caf50;
-            padding: 15px 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            width: 100%;
-            text-align: left;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-        }
-
-        .info-card h3 {
-            color: #388e3c; /* Màu xanh lá cây đậm */
-            margin-top: 0;
-            margin-bottom: 5px;
-            font-size: 1.1em;
-        }
-
-        .info-card p {
-            margin: 0;
-            line-height: 1.5;
-            color: #555;
-        }
-
-        #logout-button {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1em;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        #logout-button:hover {
-            background-color: #d32f2f;
-            transform: translateY(-2px);
-        }
-        /* CSS kết thúc ở đây */
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang Yêu Thương Dành Cho Em</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      overflow: hidden;
+      background: linear-gradient(135deg, #f5e1da, #f9c2d3);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    #loginScreen, #mainContent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.5s ease;
+    }
+    #loginScreen {
+      background: rgba(255, 255, 255, 0.95);
+    }
+    #mainContent {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+      max-width: 300px;
+    }
+    .key {
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .key:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+    .key:active {
+      background: rgba(200, 200, 200, 0.8);
+    }
+    .pass-dot {
+      width: 12px;
+      height: 12px;
+      background: #ccc;
+      border-radius: 50%;
+      margin: 0 5px;
+      transition: background 0.3s ease;
+    }
+    .pass-dot.filled {
+      background: #007aff;
+    }
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ff6b6b;
+      transform: rotate(45deg);
+      animation: float 6s infinite;
+    }
+    .heart:before,
+    .heart:after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ff6b6b;
+      border-radius: 50%;
+    }
+    .heart:before {
+      top: -10px;
+      left: 0;
+    }
+    .heart:after {
+      top: 0;
+      left: -10px;
+    }
+    .cute-emoji {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      font-size: 30px;
+      animation: bounce 4s infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(45deg); opacity: 0.8; }
+      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.1); }
+    }
+    .message-card, .cute-button {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      margin: 20px;
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .message-card:hover, .cute-button:hover {
+      transform: scale(1.05);
+      background: #ffe6e6;
+    }
+    .cute-button {
+      background: #ff99cc;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div id="welcome-screen" class="screen active">
-        <h1>Chào Em Yêu!</h1>
-        <button id="start-button">Bấm để bắt đầu</button>
+  <div id="loginScreen">
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Nhập Mật Khẩu</h1>
+    <p class="text-gray-600 mb-6">Mật khẩu 4 số để mở khóa tình yêu</p>
+    <div class="flex mb-6">
+      <div class="pass-dot"></div>
+      <div class="pass-dot"></div>
+      <div class="pass-dot"></div>
+      <div class="pass-dot"></div>
     </div>
-
-    <div id="passcode-screen" class="screen">
-        <h2>Nhập mật khẩu của chúng mình</h2>
-        <div class="passcode-display">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
-        <div class="keypad">
-            <button class="key">1</button>
-            <button class="key">2</button>
-            <button class="key">3</button>
-            <button class="key">4</button>
-            <button class="key">5</button>
-            <button class="key">6</button>
-            <button class="key">7</button>
-            <button class="key">8</button>
-            <button class="key">9</button>
-            <button class="key empty"></button> <button class="key">0</button>
-            <button class="key delete">Xóa</button>
-        </div>
-        <p id="error-message" class="error-message"></p>
+    <div class="keypad">
+      <div class="key" onclick="addDigit('1')">1</div>
+      <div class="key" onclick="addDigit('2')">2</div>
+      <div class="key" onclick="addDigit('3')">3</div>
+      <div class="key" onclick="addDigit('4')">4</div>
+      <div class="key" onclick="addDigit('5')">5</div>
+      <div class="key" onclick="addDigit('6')">6</div>
+      <div class="key" onclick="addDigit('7')">7</div>
+      <div class="key" onclick="addDigit('8')">8</div>
+      <div class="key" onclick="addDigit('9')">9</div>
+      <div class="key" style="visibility: hidden;"></div>
+      <div class="key" onclick="addDigit('0')">0</div>
+      <div class="key" onclick="clearLast()">⌫</div>
     </div>
+    <p id="errorMsg" class="text-red-500 mt-4 hidden">Sai mật khẩu! Thử lại nhé em!</p>
+  </div>
 
-    <div id="main-screen" class="screen">
-        <h1>Thông tin cute về Em Yêu!</h1>
-        <div class="info-card">
-            <h3>Tên Em:</h3>
-            <p>Nguyễn Thị Yêu</p>
-        </div>
-        <div class="info-card">
-            <h3>Ngày sinh nhật:</h3>
-            <p>16/12/2000</p>
-        </div>
-        <div class="info-card">
-            <h3>Sở thích:</h3>
-            <p>Thích anh, nghe nhạc, đọc sách, nấu ăn, du lịch...</p>
-        </div>
-        <div class="info-card">
-            <h3>Điều anh yêu nhất ở em:</h3>
-            <p>Nụ cười của em, sự quan tâm của em, và mọi thứ thuộc về em!</p>
-        </div>
-        <button id="logout-button">Đăng xuất</button>
+  <div id="mainContent">
+    <h1 class="text-4xl font-bold text-pink-700 mb-8">Anh Yêu Em Nhiều Lắm!</h1>
+    <div class="message-card" onclick="revealMessage(this)">
+      <p class="text-lg text-gray-700">Nhấn để xem lời nhắn 1</p>
+      <p class="hidden text-pink-600 font-semibold">Em là ánh sáng của cuộc đời anh, luôn làm anh cười mỗi ngày!</p>
     </div>
+    <div class="message-card" onclick="revealMessage(this)">
+      <p class="text-lg text-gray-700">Nhấn để xem lời nhắn 2</p>
+      <p class="hidden text-pink-600 font-semibold">Anh sẽ luôn bên em, cùng em vượt qua mọi thử thách!</p>
+    </div>
+    <div class="message-card" onclick="revealMessage(this)">
+      <p class="text-lg text-gray-700">Nhấn để xem lời nhắn 3</p>
+      <p class="hidden text-pink-600 font-semibold">Trái tim anh chỉ có em, mãi mãi là như vậy!</p>
+    </div>
+    <div class="cute-button" onclick="surprise()">Bất Ngờ Dành Cho Em!</div>
+    <div class="cute-button" onclick="rainbowHearts()">Mưa Trái Tim Cầu Vồng!</div>
+    <div class="cute-button" onclick="dancingBears()">Gấu Teddy Nhảy Nhót!</div>
+    <div class="cute-button" onclick="sparkleShower()">Pháo Hoa Lấp Lánh!</div>
+    <div class="cute-button" onclick="loveExplosion()">Bùng Nổ Tình Yêu!</div>
+  </div>
 
-    <script>
-        // JavaScript bắt đầu từ đây
-        document.addEventListener('DOMContentLoaded', () => {
-            const welcomeScreen = document.getElementById('welcome-screen');
-            const startButton = document.getElementById('start-button');
-            const passcodeScreen = document.getElementById('passcode-screen');
-            const mainScreen = document.getElementById('main-screen');
-            const keypad = document.querySelector('.keypad');
-            const passcodeDots = document.querySelectorAll('.passcode-display .dot');
-            const errorMessage = document.getElementById('error-message');
-            const logoutButton = document.getElementById('logout-button');
+  <audio id="backgroundMusic" loop>
+    <source src="https://www.kozco.com/tech/piano2-CoolEdit.mp3" type="audio/mpeg">
+  </audio>
 
-            const correctPasscode = "1612"; // Mật khẩu đúng
-            let enteredPasscode = ""; // Mật khẩu người dùng nhập
+  <script>
+    let password = '';
+    const correctPassword = '1612';
+    const dots = document.querySelectorAll('.pass-dot');
+    const audio = document.getElementById('backgroundMusic');
 
-            // Hàm chuyển đổi màn hình
-            function showScreen(screenId) {
-                document.querySelectorAll('.screen').forEach(screen => {
-                    screen.classList.remove('active');
-                });
-                document.getElementById(screenId).classList.add('active');
-            }
+    function addDigit(digit) {
+      if (password.length < 4) {
+        password += digit;
+        updateDots();
+        if (password.length === 4) {
+          checkPassword();
+        }
+      }
+    }
 
-            // Xử lý sự kiện khi bấm nút "Bắt đầu"
-            startButton.addEventListener('click', () => {
-                showScreen('passcode-screen');
-            });
+    function clearLast() {
+      password = password.slice(0, -1);
+      updateDots();
+      document.getElementById('errorMsg').classList.add('hidden');
+    }
 
-            // Xử lý khi bấm các phím số trên bàn phím
-            keypad.addEventListener('click', (event) => {
-                const target = event.target;
-                if (target.classList.contains('key') && !target.classList.contains('empty')) {
-                    if (target.classList.contains('delete')) {
-                        // Xóa ký tự cuối cùng
-                        enteredPasscode = enteredPasscode.slice(0, -1);
-                    } else {
-                        // Thêm số vào mật khẩu đã nhập
-                        if (enteredPasscode.length < correctPasscode.length) {
-                            enteredPasscode += target.textContent;
-                        }
-                    }
-                    updatePasscodeDisplay();
-                    checkPasscode();
-                }
-            });
+    function updateDots() {
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('filled', index < password.length);
+      });
+    }
 
-            // Cập nhật hiển thị các chấm mật khẩu
-            function updatePasscodeDisplay() {
-                passcodeDots.forEach((dot, index) => {
-                    if (index < enteredPasscode.length) {
-                        dot.classList.add('filled');
-                    } else {
-                        dot.classList.remove('filled');
-                    }
-                });
-                // Ẩn thông báo lỗi khi người dùng bắt đầu nhập lại
-                errorMessage.classList.remove('show');
-            }
+    function checkPassword() {
+      const errorMsg = document.getElementById('errorMsg');
+      if (password === correctPassword) {
+        gsap.to('#loginScreen', { opacity: 0, duration: 0.5, onComplete: () => {
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('mainContent').style.pointerEvents = 'auto';
+          gsap.to('#mainContent', { opacity: 1, duration: 0.5 });
+          audio.play();
+          startHearts();
+          startEmojis();
+          animateCards();
+        }});
+      } else {
+        errorMsg.classList.remove('hidden');
+        gsap.fromTo('.pass-dot', { x: 0 }, { x: -10, duration: 0.1, yoyo: true, repeat: 5 });
+        setTimeout(() => {
+          password = '';
+          updateDots();
+          errorMsg.classList.add('hidden');
+        }, 1000);
+      }
+    }
 
-            // Kiểm tra mật khẩu
-            function checkPasscode() {
-                if (enteredPasscode.length === correctPasscode.length) {
-                    if (enteredPasscode === correctPasscode) {
-                        // Mật khẩu đúng, chuyển sang màn hình chính
-                        setTimeout(() => {
-                            showScreen('main-screen');
-                            enteredPasscode = ""; // Reset mật khẩu
-                            updatePasscodeDisplay(); // Reset hiển thị chấm
-                        }, 300); // Chờ một chút trước khi chuyển màn hình
-                    } else {
-                        // Mật khẩu sai, hiển thị lỗi và reset
-                        errorMessage.textContent = "Mật khẩu sai rồi Em Yêu, thử lại nhé!";
-                        errorMessage.classList.add('show');
-                        enteredPasscode = ""; // Reset mật khẩu
-                        setTimeout(() => {
-                            updatePasscodeDisplay(); // Reset hiển thị chấm sau 1 giây
-                        }, 1000);
-                    }
-                }
-            }
+    function startHearts() {
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }, 500);
+    }
 
-            // Xử lý khi bấm nút "Đăng xuất"
-            logoutButton.addEventListener('click', () => {
-                showScreen('welcome-screen');
-                enteredPasscode = ""; // Đảm bảo mật khẩu được reset
-                updatePasscodeDisplay(); // Cập nhật hiển thị chấm
-            });
+    function startEmojis() {
+      const emojis = ['🐻', '🐰', '🦊', '🐱', '🌸', '✨'];
+      setInterval(() => {
+        const emoji = document.createElement('div');
+        emoji.className = 'cute-emoji';
+        emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * 100 + 'vw';
+        emoji.style.animationDuration = Math.random() * 2 + 3 + 's';
+        document.body.appendChild(emoji);
+        setTimeout(() => emoji.remove(), 4000);
+      }, 800);
+    }
+
+    function animateCards() {
+      gsap.from('.message-card, .cute-button', {
+        y: 100,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.3,
+        ease: 'bounce.out'
+      });
+    }
+
+    function revealMessage(card) {
+      const hiddenMsg = card.querySelector('p.hidden');
+      hiddenMsg.classList.remove('hidden');
+      gsap.from(hiddenMsg, { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out' });
+    }
+
+    function surprise() {
+      const surpriseDiv = document.createElement('div');
+      surpriseDiv.innerHTML = '<p class="text-2xl text-red-600 font-bold">Anh sẽ mãi yêu và che chở cho em, tình yêu của anh!</p>';
+      surpriseDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg';
+      document.body.appendChild(surpriseDiv);
+      gsap.from(surpriseDiv, { scale: 0, opacity: 0, duration: 1, ease: 'elastic.out(1, 0.5)' });
+      setTimeout(() => {
+        gsap.to(surpriseDiv, { opacity: 0, duration: 1, onComplete: () => surpriseDiv.remove() });
+      }, 3000);
+    }
+
+    function rainbowHearts() {
+      const colors = ['#ff6b6b', '#ffcc00', '#66cc66', '#66b3ff', '#cc66cc'];
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.background = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+        heart.style.setProperty('--before-bg', heart.style.background);
+        heart.style.setProperty('--after-bg', heart.style.background);
+        document.body.appendChild(heart);
+        gsap.from(heart, { scale: 0.5, opacity: 0, duration: 0.5, delay: i * 0.1 });
+        setTimeout(() => heart.remove(), 5000);
+      }
+      const style = document.createElement('style');
+      style.innerHTML = '.heart:before, .heart:after { background: var(--before-bg); } .heart:after { background: var(--after-bg); }';
+      document.head.appendChild(style);
+    }
+
+    function dancingBears() {
+      for (let i = 0; i < 5; i++) {
+        const bear = document.createElement('div');
+        bear.className = 'cute-emoji';
+        bear.innerText = '🐻';
+        bear.style.left = Math.random() * 80 + 10 + 'vw';
+        bear.style.top = Math.random() * 80 + 10 + 'vh';
+        document.body.appendChild(bear);
+        gsap.to(bear, {
+          x: Math.random() * 100 - 50,
+          y: Math.random() * 100 - 50,
+          rotation: Math.random() * 360,
+          duration: 2,
+          repeat: 3,
+          yoyo: true,
+          ease: 'power2.inOut',
+          onComplete: () => bear.remove()
         });
-        // JavaScript kết thúc ở đây
-    </script>
+      }
+    }
+
+    function sparkleShower() {
+      const sparkles = ['✨', '🌟', '💫'];
+      for (let i = 0; i < 15; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'cute-emoji';
+        sparkle.innerText = sparkles[Math.floor(Math.random() * sparkles.length)];
+        sparkle.style.left = Math.random() * 100 + 'vw';
+        sparkle.style.top = '0vh';
+        document.body.appendChild(sparkle);
+        gsap.to(sparkle, {
+          y: Math.random() * 80 + 20 + 'vh',
+          x: Math.random() * 200 - 100,
+          rotation: Math.random() * 180,
+          duration: Math.random() * 3 + 2,
+          ease: 'power1.out',
+          onComplete: () => sparkle.remove()
+        });
+      }
+    }
+
+    function loveExplosion() {
+      const items = ['💖', '💕', '❤️', '😘'];
+      for (let i = 0; i < 20; i++) {
+        const item = document.createElement('div');
+        item.className = 'cute-emoji';
+        item.innerText = items[Math.floor(Math.random() * items.length)];
+        item.style.left = '50vw';
+        item.style.top = '50vh';
+        document.body.appendChild(item);
+        gsap.fromTo(item, 
+          { scale: 0, opacity: 1 }, 
+          { 
+            x: (Math.random() - 0.5) * 500, 
+            y: (Math.random() - 0.5) * 500, 
+            scale: 1.5, 
+            opacity: 0, 
+            duration: 1.5, 
+            ease: 'power2.out', 
+            onComplete: () => item.remove()
+          }
+        );
+      }
+    }
+  </script>
 </body>
 </html>
