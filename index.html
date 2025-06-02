@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Yêu Thương Dành Cho Em</title>
+    <title>Cổng Thông tin Bí mật quốc gia</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -314,7 +314,7 @@
     </div>
 
     <div id="quizScreen">
-        <h1 class="text-4xl font-extrabold text-pink-700 mt-8 mb-10 animate-pulse">Trắc Nghiệm Tình Yêu Về Duy Khoa ❤️</h1>
+        <h1 class="text-4xl font-extrabold text-pink-700 mt-8 mb-10 animate-pulse">Bài kiếm tra nhỏ, trả lời đúng 3/5 câu sẽ mở ra phần quá bí mật! ❤️</h1>
         <div class="quiz-container">
             <p id="questionText" class="quiz-question"></p>
             <div id="optionsContainer" class="quiz-options">
@@ -331,7 +331,7 @@
     </div>
 
     <div id="giftScreen">
-        <h1 class="text-4xl font-extrabold text-pink-700 mt-8 mb-10 animate-pulse">Em đã xuất sắc! 🎁</h1>
+        <h1 class="text-4xl font-extrabold text-pink-700 mt-8 mb-10 animate-pulse">Em giỏi lắm! 🎁</h1>
         <p class="text-2xl text-gray-700 mb-10">Hộp quà bí mật dành cho em!</p>
         <div class="gift-box" onclick="openGift()">
             <div class="gift-box-ribbon-h"></div>
@@ -339,11 +339,11 @@
         </div>
         <div id="letterContent" class="hidden">
             <p class="text-center">Gửi Em Yêu,</p>
-            <p class="mt-4">Anh biết em đã cố gắng rất nhiều để đến được đây. Giống như cách em luôn cố gắng trong mọi việc em làm.</p>
+            <p class="mt-4">Anh biết em đã cố gắng rất nhiều để đến được đây. Từ password đến phấn trả lời câu hỏi.</p>
             <p class="mt-4">Anh muốn nói rằng:</p>
             <p class="text-5xl font-extrabold text-center mt-8">I LOVE YOU</p>
             <p class="text-center mt-8">Nhiều hơn tất cả những gì em có thể tưởng tượng. Hãy luôn nhớ điều đó nhé!</p>
-            <p class="text-right mt-10">- Duy Khoa của Em</p>
+            <p class="text-right mt-10">- Cậu Ba Khoa</p>
         </div>
     </div>
 
@@ -442,52 +442,52 @@
         // --- Quiz Game Logic ---
         const questions = [
             {
-                question: "Món ăn nào Duy Khoa thích ăn nhất?",
+                question: "Câu 1: Món ăn nào Duy Khoa thích ăn nhất?",
                 options: {
                     A: "Bún bò",
                     B: "Phở",
                     C: "Cơm tấm",
-                    D: "Mì ý"
+                    D: "Cơm gà xối mỡ"
                 },
                 answer: "A"
             },
             {
-                question: "Duy Khoa thích màu gì nhất?",
+                question: "Câu 2: Khoa hay làm gì vào ban đêm nhất?",
                 options: {
-                    A: "Xanh dương",
-                    B: "Đen",
-                    C: "Trắng",
-                    D: "Hồng"
+                    A: "Xem phim",
+                    B: "Chơi Game",
+                    C: "Lướt Tik Tok",
+                    D: "Nhắn tin với bạn"
                 },
-                answer: "B"
+                answer: "D"
             },
             {
-                question: "Kỷ niệm đầu tiên của Duy Khoa và em là gì?",
+                question: "Câu 3: Biết ngày sinh nhật của mình không?",
                 options: {
-                    A: "Lần đầu đi xem phim",
-                    B: "Lần đầu đi ăn kem",
-                    C: "Lần đầu nắm tay",
-                    D: "Lần đầu đi chơi xa"
+                    A: "16 tháng 12",
+                    B: "17 tháng 12",
+                    C: "18 tháng 12",
+                    D: "19 tháng 12"
                 },
-                answer: "C" // Adjust this to your actual first memory!
+                answer: "A" // Adjust this to your actual first memory!
             },
             {
-                question: "Duy Khoa thường nghe thể loại nhạc nào?",
+                question: "Câu 4: Khoa thường ngủ vào lúc mấy giờ",
                 options: {
-                    A: "Pop ballad",
-                    B: "Rock",
-                    C: "EDM",
-                    D: "Acoustic"
+                    A: "21h",
+                    B: "22h",
+                    C: "23h",
+                    D: "23h30"
                 },
-                answer: "A"
+                answer: "C"
             },
             {
-                question: "Ước mơ lớn nhất của Duy Khoa hiện tại là gì?",
+                question: "Câu 5: Khoa thích nhất là cái gì trên đời này?",
                 options: {
                     A: "Du lịch vòng quanh thế giới",
                     B: "Mua nhà thật to",
-                    C: "Luôn có em bên cạnh",
-                    D: "Thăng tiến trong công việc"
+                    C: "Trở thành bá vương",
+                    D: "Sống khỏe mạnh giàu sang cùng gia đình"
                 },
                 answer: "C" // Make this a sweet answer!
             }
@@ -541,7 +541,7 @@
 
             if (selectedOption === correctAnswer) {
                 correctAnswersCount++;
-                quizFeedbackElem.innerText = "Chính xác! Em thật hiểu anh!";
+                quizFeedbackElem.innerText = "Chính xác! Giỏi quá!";
                 quizFeedbackElem.classList.remove('hidden');
                 quizFeedbackElem.style.color = '#457b9d'; // Blue for correct
                 playSound(correctAnswerSound);
